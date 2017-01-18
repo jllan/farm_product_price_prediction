@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+
+            <div>
+		        <div class="form-group">
+		          <label>请选择农产品种类</label>
+		             <select class="form-control" name="product" id="product">
+                         <option value="西红柿">西红柿</option>
+                         <option value="土豆">土豆</option>
+					 </select>
+                </div>
+                <div class="form-group">
+                  <label>请选择农产品批发市场</label>
+		             <select class="form-control" name="market" id="market">
+                         <option value="南京农副产品物流中心">南京农副产品物流中心</option>
+					 </select>
+		        </div>
+		        <input id="start_spider" type="submit" class="btn btn-primary btn-lg" value="启动爬虫"/>
+                <input id="show_table" type="submit" class="btn btn-primary btn-lg" value="查看价格图表"/>
+                <input id="show_chart" type="submit" class="btn btn-primary btn-lg" value="查看价格走势"/>
+            </div>
+
+<script>
+    $(function() {
+        $('#start_spider').bind('click', function () {
+            var product=$("#product option:selected");  //获取选中的项
+            var market=$("#market option:selected");
+            //alert(options.val());   //拿到选中项的值
+            //alert(options.text());
+            alert('开始爬取'+market.val()+' '+product.val()+'的价格，爬虫正在紧张工作中，请勿进行其他操作，请等待几分钟，网页会自动跳转');
+//            alert('/get/'+product.val()+'/'+market.val());
+            $.get('/get/'+product.val()+'/'+market.val())
+            });
+        $('#show_table').bind('click', function () {
+            var product=$("#product option:selected");  //获取选中的项
+            var market=$("#market option:selected");
+            //alert(options.val());   //拿到选中项的值
+            //alert(options.text());
+            //alert('/show_table/'+product.val()+'/'+market.val());
+            $.get('/show_table/'+product.val()+'/'+market.val())
+            });
+        $('#show_chart').bind('click', function () {
+            //var product=$("#product option:selected");  //获取选中的项
+            //var market=$("#market option:selected");
+//            alert(product.val());
+            get();
+
+            })
+    });
+
+    function get() {
+         $.ajax({
+                type: 'GET',
+                url: '/show_chart',
+                data: {
+                    product: $("#product option:selected").val(), //获取选中的项
+                    market: $("#market option:selected").val()
+                },
+                success: function (data) {
+                    var myChart = echarts.init(document.getElementById("main"));
+                    var option = {
+                        title : {
+                            text: data['market']+data['product']+'价格',
+                            subtext: ''
+                        },
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['价格']
+                        },
+                        //右上角工具条
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                magicType : {show: true, type: ['line', 'bar']},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        calculable : true,
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : data['dates']
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value',
+                                axisLabel : {
+                                    formatter: '{value} ￥'
+                                }
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'价格',
+                                type:'line',
+                                data:data['prices'],
+                                markPoint : {
+                                    data : [
+                                        {type : 'max', name: '最大值'}
+                                    ]
+                                },
+                                markLine : {
+                                    data : [
+                                        {type : 'average', name: '平均值'}
+                                    ]
+                                }
+                            }
+                        ]
+                    };
+
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                    },
+                    error: function (){
+                        alert('error');
+                    }
+                });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script type="text/javascript">
+
+    // 基于准备好的dom，初始化echarts图表
+    var myChart = echarts.init(document.getElementById("main"));
+    var option = {
+        title : {
+            text: '农产品价格走势图',
+            subtext: ''
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['最高气温','最低气温']
+        },
+        //右上角工具条
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : ['周一','周二','周三','周四','周五','周六','周日']
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} ￥'
+                }
+            }
+        ],
+        series : [
+            {
+                name:'最高气温',
+                type:'line',
+                data:[11, 11, 15, 13, 12, 13, 10],
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
+
+    // 为echarts对象加载数据
+    myChart.setOption(option);
+</script>
+
+{% endblock %}

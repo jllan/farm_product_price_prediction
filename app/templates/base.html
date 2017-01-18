@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css', _external=True )}}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='bootstrap/js/jquery.js', _external=True )}}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js', _external=True )}}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/echarts.js', _external=True )}}"></script>
+    <title>农产品价格采集和预测系统</title>
+</head>
+<body>
+
+
+ <div class="container">
+      <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %}
+      </div>
+
+      <div class="header clearfix">
+        <h3 class="text-muted"><a href="/">农产品价格采集和预测系统</a></h3>
+      </div>
+
+      <div class="jumbotron">
+        {% block content %}
+        {% endblock %}
+      </div>
+
+     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 1000px;height:400px;"></div>
+
+
+
+
+      <footer class="footer">
+        <p>&copy; Jlan 2016</p>
+      </footer>
+
+ </div> <!-- /container -->
+</body>
+</html>

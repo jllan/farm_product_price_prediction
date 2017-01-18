@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        <h2>农产品价格</h2>
+        {% if prices %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>农产品</th>
+                        <th>价格</th>
+                        <th>日期</th>
+                        <th>市场</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for p in prices.items %}
+                       <tr>
+                       <td>{{ p.title }}</td>
+                       <td>{{ p.price }}</td>
+                       <td>{{ p.date }}</td>
+                       <td>{{ p.market }}</td>
+                       </tr>
+                   {% endfor %}
+
+                </tbody>
+            </table>
+        {% else %}
+                <h3 class="text-info">没有农产品价格信息</h3>
+        {% endif %}
+    </div>
+
+
+{# Macro for creating navigation links #}
+{% macro render_navigation(pagination, endpoint) %}
+  <div class=pagination>
+  {% for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a>
+      {% else %}
+        <strong>{{ page }}</strong>
+      {% endif %}
+    {% else %}
+      <span class=ellipsis>…</span>
+    {% endif %}
+  {% endfor %}
+  </div>
+{% endmacro %}
+
+{{ render_navigation(prices, 'show_table') }}
+
+{% endblock %}
